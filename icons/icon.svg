@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1a1a2e"/>
+      <stop offset="100%" style="stop-color:#0f0f23"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ffd700"/>
+      <stop offset="100%" style="stop-color:#b8860b"/>
+    </linearGradient>
+    <linearGradient id="stone" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#5a5a5a"/>
+      <stop offset="50%" style="stop-color:#8a8a8a"/>
+      <stop offset="100%" style="stop-color:#5a5a5a"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="80" fill="url(#bg)"/>
+
+  <!-- Castle Base -->
+  <rect x="156" y="280" width="200" height="140" fill="url(#stone)" stroke="#3a3a3a" stroke-width="4"/>
+
+  <!-- Castle Gate -->
+  <path d="M 220 420 L 220 330 Q 256 300 292 330 L 292 420 Z" fill="#1a1a1a"/>
+
+  <!-- Left Tower -->
+  <rect x="120" y="200" width="60" height="220" fill="url(#stone)" stroke="#3a3a3a" stroke-width="3"/>
+  <polygon points="90,200 180,200 150,140" fill="#8b0000"/>
+
+  <!-- Right Tower -->
+  <rect x="332" y="200" width="60" height="220" fill="url(#stone)" stroke="#3a3a3a" stroke-width="3"/>
+  <polygon points="332,200 422,200 362,140" fill="#8b0000"/>
+
+  <!-- Center Tower -->
+  <rect x="226" y="160" width="60" height="120" fill="url(#stone)" stroke="#3a3a3a" stroke-width="3"/>
+  <polygon points="206,160 306,160 256,100" fill="#8b0000"/>
+
+  <!-- Flag -->
+  <rect x="254" y="70" width="4" height="40" fill="#4a3a2a"/>
+  <polygon points="258,70 298,85 258,100" fill="url(#gold)"/>
+
+  <!-- Battlements -->
+  <rect x="156" y="270" width="20" height="20" fill="url(#stone)"/>
+  <rect x="196" y="270" width="20" height="20" fill="url(#stone)"/>
+  <rect x="296" y="270" width="20" height="20" fill="url(#stone)"/>
+  <rect x="336" y="270" width="20" height="20" fill="url(#stone)"/>
+
+  <!-- Title -->
+  <text x="256" y="470" font-family="serif" font-size="48" font-weight="bold" fill="url(#gold)" text-anchor="middle">DEFENSE</text>
+</svg>
