@@ -1146,7 +1146,6 @@
         document.getElementById('start-wave-btn').style.display = 'none';
         showMessage('Wave ' + gameState.wave);
         const waveConfig = WAVES[gameState.wave - 1];
-        console.log('Starting wave', gameState.wave, 'with config:', waveConfig);
         let totalEnemies = 0;
         waveConfig.enemies.forEach(group => {
             for (let i = 0; i < group.count; i++) {
@@ -1154,12 +1153,10 @@
                 totalEnemies++;
             }
         });
-        console.log('Scheduled', totalEnemies, 'enemies to spawn');
         updateUI();
     }
 
     function spawnEnemy(type) {
-        console.log('Spawning enemy:', type);
         const enemyDef = ENEMIES[type];
         if (!enemyDef) { console.error('Unknown enemy type:', type); return; }
         const enemy = createEnemyModel(type);
@@ -1172,7 +1169,6 @@
         };
         scene.add(enemy);
         gameState.enemies.push(enemy);
-        console.log('Enemy added. Total enemies:', gameState.enemies.length);
     }
 
     function updateEnemies(deltaTime) {
