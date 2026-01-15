@@ -308,9 +308,133 @@
             .resource { font-size: 12px; }
             #start-wave-btn { padding: 12px 30px; font-size: 14px; }
         }
+
+        /* Main Menu Styles */
+        #menuScreen {
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(180deg, #0a0a15 0%, #1a1a2e 50%, #0f0f23 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 300;
+        }
+        .menu-content {
+            text-align: center;
+            padding: 40px;
+        }
+        #menuScreen h1 {
+            font-size: clamp(36px, 10vw, 72px);
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255,215,0,0.5), 0 4px 8px rgba(0,0,0,0.8);
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            font-size: 18px;
+            color: #aaa;
+            margin-bottom: 40px;
+        }
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .menu-btn {
+            padding: 18px 60px;
+            font-size: 22px;
+            font-weight: bold;
+            background: linear-gradient(180deg, #8b6914 0%, #5a4510 100%);
+            border: 3px solid #ffd700;
+            border-radius: 10px;
+            color: #fff;
+            cursor: pointer;
+            transition: all 0.3s;
+            min-width: 280px;
+            font-family: inherit;
+        }
+        .menu-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 40px rgba(255,215,0,0.6);
+        }
+        .menu-btn.secondary {
+            background: linear-gradient(180deg, #3a3a4a 0%, #2a2a3a 100%);
+            border-color: #888;
+        }
+        .game-info {
+            color: #888;
+            font-size: 14px;
+        }
+        .game-info p {
+            margin: 8px 0;
+        }
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 400;
+        }
+        .modal-content {
+            background: linear-gradient(180deg, #2a2a3a 0%, #1a1a2a 100%);
+            border: 2px solid #ffd700;
+            border-radius: 15px;
+            padding: 30px 40px;
+            max-width: 400px;
+            text-align: left;
+        }
+        .modal-content h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .modal-content ul {
+            list-style: none;
+            padding: 0;
+        }
+        .modal-content li {
+            margin: 12px 0;
+            color: #ccc;
+        }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
+    <!-- Main Menu Screen -->
+    <div id="menuScreen">
+        <div class="menu-content">
+            <h1>CASTLE DEFENSE 3D</h1>
+            <p class="subtitle">Defend your kingdom against waves of enemies!</p>
+            <div class="menu-buttons">
+                <button class="menu-btn" id="startGameBtn">START GAME</button>
+                <button class="menu-btn secondary" id="howToPlayBtn">HOW TO PLAY</button>
+            </div>
+            <div class="game-info">
+                <p>Place towers to defend the castle</p>
+                <p>Earn gold by defeating enemies</p>
+                <p>Survive 15 waves to win!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- How To Play Modal -->
+    <div id="howToPlayModal" class="modal hidden">
+        <div class="modal-content">
+            <h2>How To Play</h2>
+            <ul>
+                <li><strong>Click</strong> a tower button to select it</li>
+                <li><strong>Click</strong> on the ground to place towers</li>
+                <li><strong>Towers</strong> automatically attack enemies in range</li>
+                <li><strong>Skills (1-4)</strong> for special abilities</li>
+                <li><strong>Don't let enemies reach the castle!</strong></li>
+            </ul>
+            <button class="menu-btn" id="closeHowTo">Got it!</button>
+        </div>
+    </div>
+
     <div id="game-container">
         <div id="loading-screen">
             <h1>Castle Defense 3D</h1>
@@ -383,31 +507,31 @@
     };
 
     const TOWERS = {
-        archer: { name: 'Archer', icon: '&#127993;', cost: 50, damage: 15, range: 4, attackSpeed: 1.2, color: 0x8b4513 },
-        wizard: { name: 'Wizard', icon: '&#128302;', cost: 80, damage: 25, range: 3.5, attackSpeed: 0.8, color: 0x4b0082, special: 'splash' },
-        frost: { name: 'Frost', icon: '&#10052;', cost: 75, damage: 10, range: 3, attackSpeed: 1.0, color: 0x00bfff, special: 'slow' },
-        cannon: { name: 'Cannon', icon: '&#128163;', cost: 100, damage: 50, range: 3, attackSpeed: 0.5, color: 0x2f2f2f, special: 'aoe' },
-        dragon: { name: 'Dragon', icon: '&#128009;', cost: 200, damage: 40, range: 4, attackSpeed: 0.7, color: 0xff4500, special: 'burn' },
-        lightning: { name: 'Lightning', icon: '&#9889;', cost: 150, damage: 35, range: 5, attackSpeed: 1.5, color: 0xffff00, special: 'chain' },
-        poison: { name: 'Poison', icon: '&#9760;', cost: 90, damage: 8, range: 3, attackSpeed: 0.6, color: 0x32cd32, special: 'dot' },
-        ballista: { name: 'Ballista', icon: '&#127919;', cost: 120, damage: 80, range: 6, attackSpeed: 0.3, color: 0x8b0000, special: 'pierce' },
-        mortar: { name: 'Mortar', icon: '&#128165;', cost: 130, damage: 60, range: 5, attackSpeed: 0.4, color: 0x4a4a4a, special: 'stun' },
-        tesla: { name: 'Tesla', icon: '&#127785;', cost: 180, damage: 20, range: 4, attackSpeed: 2.0, color: 0x00ffff, special: 'arc' }
+        archer: { name: 'Archer', icon: '&#127993;', cost: 40, damage: 12, range: 4, attackSpeed: 1.0, color: 0x8b4513 },
+        wizard: { name: 'Wizard', icon: '&#128302;', cost: 80, damage: 20, range: 3.5, attackSpeed: 0.7, color: 0x4b0082, special: 'splash' },
+        frost: { name: 'Frost', icon: '&#10052;', cost: 70, damage: 8, range: 3, attackSpeed: 0.9, color: 0x00bfff, special: 'slow' },
+        cannon: { name: 'Cannon', icon: '&#128163;', cost: 100, damage: 40, range: 3, attackSpeed: 0.4, color: 0x2f2f2f, special: 'aoe' },
+        dragon: { name: 'Dragon', icon: '&#128009;', cost: 180, damage: 30, range: 4, attackSpeed: 0.6, color: 0xff4500, special: 'burn' },
+        lightning: { name: 'Lightning', icon: '&#9889;', cost: 150, damage: 25, range: 5, attackSpeed: 1.2, color: 0xffff00, special: 'chain' },
+        poison: { name: 'Poison', icon: '&#9760;', cost: 85, damage: 6, range: 3, attackSpeed: 0.5, color: 0x32cd32, special: 'dot' },
+        ballista: { name: 'Ballista', icon: '&#127919;', cost: 120, damage: 60, range: 6, attackSpeed: 0.25, color: 0x8b0000, special: 'pierce' },
+        mortar: { name: 'Mortar', icon: '&#128165;', cost: 130, damage: 45, range: 5, attackSpeed: 0.35, color: 0x4a4a4a, special: 'stun' },
+        tesla: { name: 'Tesla', icon: '&#127785;', cost: 160, damage: 15, range: 4, attackSpeed: 1.8, color: 0x00ffff, special: 'arc' }
     };
 
     const ENEMIES = {
-        goblin: { name: 'Goblin', health: 50, speed: 1.2, reward: 10, color: 0x44aa44 },
-        orc: { name: 'Orc', health: 100, speed: 0.8, reward: 15, color: 0x448844 },
-        skeleton: { name: 'Skeleton', health: 40, speed: 1.5, reward: 8, color: 0xccccaa },
-        wolf: { name: 'Wolf', health: 60, speed: 2.0, reward: 12, color: 0x666666 },
-        troll: { name: 'Troll', health: 300, speed: 0.5, reward: 50, armor: 5, color: 0x558855 },
-        darkKnight: { name: 'Dark Knight', health: 200, speed: 0.7, reward: 30, armor: 10, color: 0x222233 },
-        necromancer: { name: 'Necromancer', health: 80, speed: 0.9, reward: 25, shield: 50, color: 0x440044 },
-        dragon: { name: 'Dragon', health: 500, speed: 0.6, reward: 100, armor: 15, color: 0xaa2222 },
-        demon: { name: 'Demon', health: 400, speed: 0.8, reward: 80, color: 0x880000 },
-        lich: { name: 'Lich', health: 250, speed: 0.7, reward: 60, shield: 100, color: 0x220044 },
-        golem: { name: 'Golem', health: 600, speed: 0.3, reward: 70, armor: 20, color: 0x555566 },
-        boss: { name: 'Dark Lord', health: 2000, speed: 0.4, reward: 500, armor: 25, shield: 200, color: 0x110022 }
+        goblin: { name: 'Goblin', health: 80, speed: 1.2, reward: 10, color: 0x44aa44 },
+        orc: { name: 'Orc', health: 150, speed: 0.8, reward: 15, color: 0x448844 },
+        skeleton: { name: 'Skeleton', health: 60, speed: 1.5, reward: 8, color: 0xccccaa },
+        wolf: { name: 'Wolf', health: 100, speed: 2.0, reward: 12, color: 0x666666 },
+        troll: { name: 'Troll', health: 500, speed: 0.5, reward: 50, armor: 8, color: 0x558855 },
+        darkKnight: { name: 'Dark Knight', health: 400, speed: 0.7, reward: 30, armor: 15, color: 0x222233 },
+        necromancer: { name: 'Necromancer', health: 150, speed: 0.9, reward: 25, shield: 80, color: 0x440044 },
+        dragon: { name: 'Dragon', health: 1200, speed: 0.6, reward: 100, armor: 20, color: 0xaa2222 },
+        demon: { name: 'Demon', health: 800, speed: 0.8, reward: 80, color: 0x880000 },
+        lich: { name: 'Lich', health: 500, speed: 0.7, reward: 60, shield: 150, color: 0x220044 },
+        golem: { name: 'Golem', health: 1000, speed: 0.3, reward: 70, armor: 25, color: 0x555566 },
+        boss: { name: 'Dark Lord', health: 4000, speed: 0.4, reward: 500, armor: 30, shield: 300, color: 0x110022 }
     };
 
     const SKILLS = {
@@ -1156,14 +1280,19 @@
         updateUI();
     }
 
+    function getScaledHealth(baseHealth, wave) {
+        return Math.floor(baseHealth * Math.pow(1.12, wave - 1));
+    }
+
     function spawnEnemy(type) {
         const enemyDef = ENEMIES[type];
         if (!enemyDef) { console.error('Unknown enemy type:', type); return; }
         const enemy = createEnemyModel(type);
         const startPoint = PATH[0];
         enemy.position.set(startPoint.x * CONFIG.CELL_SIZE + CONFIG.CELL_SIZE / 2, 0, startPoint.z * CONFIG.CELL_SIZE + CONFIG.CELL_SIZE / 2);
+        const scaledHealth = getScaledHealth(enemyDef.health, gameState.wave);
         enemy.userData = {
-            type, health: enemyDef.health, maxHealth: enemyDef.health, speed: enemyDef.speed,
+            type, health: scaledHealth, maxHealth: scaledHealth, speed: enemyDef.speed,
             reward: enemyDef.reward, armor: enemyDef.armor || 0, shield: enemyDef.shield || 0,
             pathIndex: 0, effects: {}, healthBar: enemy.userData.healthBar
         };
@@ -1383,19 +1512,35 @@
         renderer.render(scene, camera);
     }
 
+    function initMenu() {
+        document.getElementById('startGameBtn').addEventListener('click', () => {
+            document.getElementById('menuScreen').classList.add('hidden');
+            init();
+        });
+
+        document.getElementById('howToPlayBtn').addEventListener('click', () => {
+            document.getElementById('howToPlayModal').classList.remove('hidden');
+        });
+
+        document.getElementById('closeHowTo').addEventListener('click', () => {
+            document.getElementById('howToPlayModal').classList.add('hidden');
+        });
+    }
+
     function init() {
         initThreeJS();
         initUI();
         animate(0);
     }
 
+    // Initialize menu on load, wait for start button
+    initMenu();
+
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
             navigator.serviceWorker.register('sw.js').catch(() => {});
         });
     }
-
-    init();
     </script>
 </body>
 </html>
