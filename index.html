@@ -835,13 +835,23 @@
     function createEnemyModel(type) {
         const enemyDef = ENEMIES[type];
         const enemy = new THREE.Group();
+        const bodyMat = new THREE.MeshStandardMaterial({ color: enemyDef.color });
 
-        const body = new THREE.Mesh(new THREE.CapsuleGeometry(0.3, 0.6, 4, 8), new THREE.MeshStandardMaterial({ color: enemyDef.color }));
-        body.position.y = 0.8;
-        body.castShadow = true;
-        enemy.add(body);
+        // Body (cylinder + spheres for capsule shape - r128 compatible)
+        const bodyMain = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 0.6, 8), bodyMat);
+        bodyMain.position.y = 0.8;
+        bodyMain.castShadow = true;
+        enemy.add(bodyMain);
 
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), new THREE.MeshStandardMaterial({ color: enemyDef.color }));
+        const bodyTop = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), bodyMat);
+        bodyTop.position.y = 1.1;
+        enemy.add(bodyTop);
+
+        const bodyBottom = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 8), bodyMat);
+        bodyBottom.position.y = 0.5;
+        enemy.add(bodyBottom);
+
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.25, 16, 16), bodyMat);
         head.position.y = 1.5;
         enemy.add(head);
 
@@ -1136,6 +1146,7 @@
         document.getElementById('start-wave-btn').style.display = 'none';
         showMessage('Wave ' + gameState.wave);
         const waveConfig = WAVES[gameState.wave - 1];
+        console.log('Starting wave', gameState.wave, 'with config:', waveConfig);
         let totalEnemies = 0;
         waveConfig.enemies.forEach(group => {
             for (let i = 0; i < group.count; i++) {
@@ -1143,11 +1154,14 @@
                 totalEnemies++;
             }
         });
+        console.log('Scheduled', totalEnemies, 'enemies to spawn');
         updateUI();
     }
 
     function spawnEnemy(type) {
+        console.log('Spawning enemy:', type);
         const enemyDef = ENEMIES[type];
+        if (!enemyDef) { console.error('Unknown enemy type:', type); return; }
         const enemy = createEnemyModel(type);
         const startPoint = PATH[0];
         enemy.position.set(startPoint.x * CONFIG.CELL_SIZE + CONFIG.CELL_SIZE / 2, 0, startPoint.z * CONFIG.CELL_SIZE + CONFIG.CELL_SIZE / 2);
@@ -1158,6 +1172,7 @@
         };
         scene.add(enemy);
         gameState.enemies.push(enemy);
+        console.log('Enemy added. Total enemies:', gameState.enemies.length);
     }
 
     function updateEnemies(deltaTime) {
