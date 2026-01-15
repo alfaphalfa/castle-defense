@@ -1,4 +1,4 @@
-const CACHE_NAME = 'castle-defense-v1';
+const CACHE_NAME = 'castle-defense-v2';
 const ASSETS = [
   '/',
   '/index.html',
